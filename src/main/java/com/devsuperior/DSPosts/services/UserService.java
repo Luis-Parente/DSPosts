@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devsuperior.DSPosts.model.dto.PostDTO;
 import com.devsuperior.DSPosts.model.dto.UserDTO;
 import com.devsuperior.DSPosts.model.entities.User;
 import com.devsuperior.DSPosts.repositories.UserRepository;
@@ -53,6 +54,13 @@ public class UserService {
 	public void delete(String id) {
 		userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object not found"));
 		userRepository.deleteById(id);
+
+	}
+
+	@Transactional
+	public List<PostDTO> getUserPosts(String id) {
+		User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object not found"));
+		return user.getPosts().stream().map(x -> new PostDTO(x)).toList();
 
 	}
 
