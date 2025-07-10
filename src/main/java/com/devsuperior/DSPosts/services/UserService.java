@@ -1,0 +1,64 @@
+package com.devsuperior.DSPosts.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.devsuperior.DSPosts.model.dto.UserDTO;
+import com.devsuperior.DSPosts.model.entities.User;
+import com.devsuperior.DSPosts.repositories.UserRepository;
+import com.devsuperior.DSPosts.services.exceptions.ResourceNotFoundException;
+
+@Service
+public class UserService {
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Transactional(readOnly = true)
+	public List<UserDTO> findAll() {
+		List<User> result = userRepository.findAll();
+		return result.stream().map(x -> new UserDTO(x)).toList();
+	}
+
+	@Transactional(readOnly = true)
+	public UserDTO findById(String id) {
+		User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object not found"));
+		return new UserDTO(user);
+	}
+
+	@Transactional
+	public UserDTO insert(UserDTO dto) {
+		User entity = new User();
+		copyDtoToEntity(entity, dto);
+
+		entity = userRepository.save(entity);
+
+		return new UserDTO(entity);
+	}
+
+	@Transactional
+	public UserDTO update(UserDTO dto, String id) {
+		User entity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object not found"));
+		copyDtoToEntity(entity, dto);
+
+		entity = userRepository.save(entity);
+
+		return new UserDTO(entity);
+	}
+
+	@Transactional
+	public void delete(String id) {
+		userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object not found"));
+		userRepository.deleteById(id);
+
+	}
+
+	private void copyDtoToEntity(User entity, UserDTO dto) {
+		entity.setEmail(dto.getEmail());
+		entity.setName(dto.getName());
+	}
+
+}
