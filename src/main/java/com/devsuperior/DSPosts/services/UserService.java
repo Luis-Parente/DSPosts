@@ -57,7 +57,7 @@ public class UserService {
 
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<PostDTO> getUserPosts(String id) {
 		User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object not found"));
 		return user.getPosts().stream().map(x -> new PostDTO(x)).toList();
