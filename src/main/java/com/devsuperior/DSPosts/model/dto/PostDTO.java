@@ -8,11 +8,15 @@ import com.devsuperior.DSPosts.model.embedded.Author;
 import com.devsuperior.DSPosts.model.embedded.Comment;
 import com.devsuperior.DSPosts.model.entities.Post;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class PostDTO {
 
 	private String id;
 	private Instant moment;
+	@NotBlank(message = "Required field")
 	private String title;
+	@NotBlank(message = "Required field")
 	private String body;
 
 	private Author author;
