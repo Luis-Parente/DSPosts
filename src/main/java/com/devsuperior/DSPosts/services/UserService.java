@@ -18,19 +18,16 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Transactional(readOnly = true)
 	public List<UserDTO> findAll() {
 		List<User> result = userRepository.findAll();
 		return result.stream().map(x -> new UserDTO(x)).toList();
 	}
 
-	@Transactional(readOnly = true)
 	public UserDTO findById(String id) {
 		User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object not found"));
 		return new UserDTO(user);
 	}
 
-	@Transactional
 	public UserDTO insert(UserDTO dto) {
 		User entity = new User();
 		copyDtoToEntity(entity, dto);
@@ -40,7 +37,6 @@ public class UserService {
 		return new UserDTO(entity);
 	}
 
-	@Transactional
 	public UserDTO update(UserDTO dto, String id) {
 		User entity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object not found"));
 		copyDtoToEntity(entity, dto);
@@ -50,14 +46,12 @@ public class UserService {
 		return new UserDTO(entity);
 	}
 
-	@Transactional
 	public void delete(String id) {
 		userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object not found"));
 		userRepository.deleteById(id);
 
 	}
 
-	@Transactional(readOnly = true)
 	public List<PostDTO> getUserPosts(String id) {
 		User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object not found"));
 		return user.getPosts().stream().map(x -> new PostDTO(x)).toList();

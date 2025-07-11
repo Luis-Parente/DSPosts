@@ -19,18 +19,15 @@ public class PostService {
 	@Autowired
 	private PostRepository postRepository;
 
-	@Transactional(readOnly = true)
 	public PostDTO findById(String id) {
 		Post entity = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object not found"));
 		return new PostDTO(entity);
 	}
 
-	@Transactional(readOnly = true)
 	public List<PostDTO> findByTitle(String text) {
 		return postRepository.findByTitleContainingIgnoreCase(text).stream().map(x -> new PostDTO(x)).toList();
 	}
 
-	@Transactional(readOnly = true)
 	public List<PostDTO> fullSearch(String text, String start, String end) {
 		Instant startMoment = convertMoment(start, Instant.ofEpochMilli(0L));
 		Instant endMoment = convertMoment(end, Instant.now());
